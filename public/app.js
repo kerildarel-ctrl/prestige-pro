@@ -229,7 +229,6 @@ async function mutate(fn) {
   }
 }
 
-/* ---------------- Boot / auth flow ---------------- */
 async function boot() {
   closeModal();
   // Apply saved theme
@@ -242,25 +241,28 @@ async function boot() {
 
   try {
     state.currentUser = await apiGet("/api/me");
-    const isAd = !!state.currentUser.estAdmin;
-    const isCaisse = state.currentUser.role === "Caisse";
-    if (state.tab === "dashboard" && !isAd && !isCaisse) {
-      state.tab = "commandes";
+    if (state.currentUser && state.currentUser.id) {
+      const isAd = !!state.currentUser.estAdmin;
+      const isCaisse = state.currentUser.role === "Caisse";
+      if (state.tab === "dashboard" && !isAd && !isCaisse) {
+        state.tab = "commandes";
+      }
+      state.authScreen = null;
+      await refresh();
+      startPolling();
+      return;
     }
-    state.authScreen = null;
-
-    await refresh();
-    startPolling();
   } catch (e) {
     state.currentUser = null;
-    try {
-      const status = await apiGet("/api/setup-status");
-      state.authScreen = status.hasAdmin ? "login" : "setup";
-    } catch (e2) {
-      state.authScreen = "login";
-    }
-    render();
   }
+
+  try {
+    const status = await apiGet("/api/setup-status");
+    state.authScreen = (status && status.hasAdmin) ? "login" : "setup";
+  } catch (e2) {
+    state.authScreen = "login";
+  }
+  render();
 }
 
 let pollingStarted = false;
@@ -346,8 +348,8 @@ function render() {
             <path d="M50 35C45 47 38 58 35 68C32 78 38 80 45 80C48 80 50 76 50 76C50 76 52 80 55 80C62 80 68 78 65 68C62 58 55 47 50 35Z" fill="#f59e0b" />
           </svg>
           <div style="text-align: center;">
-            <div class="brand-text" style="color:#dc2626;font-weight:800;font-size:16px;">ANATOLE SERVICE</div>
-            <div class="brand-subtext">Solutions & Services</div>
+            <div class="brand-text" style="color:#dc2626;font-weight:800;font-size:16px;">PRESTIGE PRO</div>
+            <div class="brand-subtext">Gestion & Services</div>
           </div>
         </div>
       </div>
@@ -663,7 +665,7 @@ function renderSetup() {
   return authShell(`
     <div style="text-align: center; margin-bottom: 20px;">
       <h2 style="font-family:'Outfit',sans-serif; font-size: 26px; font-weight: 800; color: #dc2626; margin: 0; letter-spacing: -0.5px;">Configuration initiale</h2>
-      <p style="color: var(--mute); font-size: 12.5px; margin: 6px 0 0; line-height: 1.4;">Créez le premier compte administrateur ANATOLE SERVICE.</p>
+      <p style="color: var(--mute); font-size: 12.5px; margin: 6px 0 0; line-height: 1.4;">Créez le premier compte administrateur Prestige Pro.</p>
     </div>
     ${state.authError ? `<p style="color:var(--red);font-size:12.5px;margin-bottom:12px;text-align:center;">${esc(state.authError)}</p>` : ""}
     <div class="field"><label>Ton nom</label><input id="su-nom" /></div>
@@ -686,7 +688,7 @@ function renderLogin() {
         <path d="M50 25C42 40 32 52 25 64C18 76 25 84 38 84C45 84 50 78 50 78C50 78 55 84 62 84C75 84 82 76 75 64C68 52 58 40 50 25Z" fill="#f97316" />
         <path d="M50 35C45 47 38 58 35 68C32 78 38 80 45 80C48 80 50 76 50 76C50 76 52 80 55 80C62 80 68 78 65 68C62 58 55 47 50 35Z" fill="#f59e0b" />
       </svg>
-      <h2 style="font-family:'Outfit',sans-serif; font-size: 26px; font-weight: 800; color: #dc2626; margin: 0; letter-spacing: -0.5px;">ANATOLE SERVICE</h2>
+      <h2 style="font-family:'Outfit',sans-serif; font-size: 26px; font-weight: 800; color: #dc2626; margin: 0; letter-spacing: -0.5px;">PRESTIGE PRO</h2>
       <p style="color: var(--mute); font-size: 12.5px; margin: 6px 0 0; line-height: 1.4;">Bienvenue ! Veuillez vous connecter pour<br>accéder à votre espace de gestion.</p>
     </div>
 
