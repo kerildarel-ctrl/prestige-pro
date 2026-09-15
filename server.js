@@ -163,8 +163,8 @@ app.get("/api/me", async (req, res) => {
 /* ---------------- /api/setup-status ---------------- */
 app.get("/api/setup-status", async (req, res) => {
   try {
-    const data = await getData();
-    const hasAdmin = data.employes.some((e) => e.estAdmin);
+    const employes = await fetchTable("employes");
+    const hasAdmin = (employes || []).some((e) => e.estAdmin || e.estadmin);
     res.json({ hasAdmin });
   } catch (err) {
     res.status(500).json({ error: err.message });

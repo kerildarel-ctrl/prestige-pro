@@ -316,7 +316,20 @@ function render() {
 
   if (state.authScreen === "setup") { root.innerHTML = renderSetup(); return; }
   if (state.authScreen === "login") { root.innerHTML = renderLogin(); return; }
-  if (!state.data) { root.innerHTML = `<div class="boot">Connexion au serveur…</div>`; return; }
+  if (!state.data) {
+    if (state.online === false) {
+      root.innerHTML = `
+        <div class="boot" style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+          <div style="color:#ef4444; font-weight:700; font-size:16px;">⚠️ Connexion au serveur impossible</div>
+          <div style="color:var(--mute); font-size:13.5px;">Veuillez vérifier votre réseau et réessayer.</div>
+          <button class="btn btn-accent" onclick="boot()" style="padding:10px 20px; border-radius:10px; cursor:pointer;">🔄 Réessayer la connexion</button>
+        </div>
+      `;
+      return;
+    }
+    root.innerHTML = `<div class="boot">Connexion au serveur…</div>`;
+    return;
+  }
 
   const todayStr = new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
   const capitalizedDate = todayStr.charAt(0).toUpperCase() + todayStr.slice(1);
