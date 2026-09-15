@@ -1367,15 +1367,16 @@ window.printCommandeReceipt = (id) => {
   }
   
   const dateObj = new Date(c.dateCreation || new Date());
-  const dateFmt = dateObj.toLocaleDateString("fr-FR");
-  const timeFmt = dateObj.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  const dateStr = dateObj.toLocaleDateString("fr-FR");
+  const isMod = c.designation.endsWith(" (Modifiée)");
+  const displayDesig = isMod ? c.designation.slice(0, -12) : c.designation;
 
-  reportWin.document.write(`
+  const html = `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Reçu ANATOLE SERVICE</title>
+      <title>Reçu Prestige Pro</title>
       <style>
         @page { margin: 0; size: 80mm auto; }
         body {
@@ -1456,11 +1457,11 @@ window.printCommandeReceipt = (id) => {
         <span>Client:</span>
         <span>${clientName}</span>
       </div>
-      \${clientTel ? \`
+      ${clientTel ? `
       <div class="info-row">
         <span>Tél:</span>
-        <span>\${clientTel}</span>
-      </div>\` : ""}
+        <span>${clientTel}</span>
+      </div>` : ""}
       
       <div class="divider"></div>
       

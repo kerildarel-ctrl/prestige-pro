@@ -235,7 +235,7 @@ app.post("/api/logout", (req, res) => {
 app.get("/api/all", async (req, res) => {
   try {
     const data = await getData();
-    res.json({ ...data, employes: data.employes.map(sanitizeEmploye), version: "1.1.1" });
+    res.json({ ...data, employes: data.employes.map(sanitizeEmploye), version: "1.1.2" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
