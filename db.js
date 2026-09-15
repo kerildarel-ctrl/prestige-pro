@@ -204,6 +204,7 @@ async function resetDatabase() {
 }
 
 module.exports = {
+  fetchTable,
   getData,
   getRow,
   insertRow,
