@@ -20,13 +20,18 @@ const PORT = process.env.PORT || 3000;
 /* ---------------- Session secret (persisted) --------------------- */
 const SECRET_PATH = path.join(__dirname, "data", "session-secret.txt");
 function getSecret() {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
   try {
     return fs.readFileSync(SECRET_PATH, "utf-8").trim();
   } catch (e) {
-    const secret = crypto.randomBytes(32).toString("hex");
-    fs.mkdirSync(path.dirname(SECRET_PATH), { recursive: true });
-    fs.writeFileSync(SECRET_PATH, secret, "utf-8");
-    return secret;
+    try {
+      const secret = crypto.randomBytes(32).toString("hex");
+      fs.mkdirSync(path.dirname(SECRET_PATH), { recursive: true });
+      fs.writeFileSync(SECRET_PATH, secret, "utf-8");
+      return secret;
+    } catch (errFs) {
+      return "prestige-pro-fallback-secret-2026";
+    }
   }
 }
 

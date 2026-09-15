@@ -6,6 +6,21 @@ const headers = {
   "Authorization": `Bearer ${SUPABASE_KEY}`
 };
 
+function normalizeRow(row) {
+  if (!row) return row;
+  const normalized = { ...row };
+  if (row.estadmin !== undefined && row.estAdmin === undefined) normalized.estAdmin = row.estadmin;
+  if (row.passwordhash !== undefined && row.passwordHash === undefined) normalized.passwordHash = row.passwordhash;
+  if (row.password !== undefined && row.passwordHash === undefined) normalized.passwordHash = row.password;
+  if (row.clientid !== undefined && row.clientId === undefined) normalized.clientId = row.clientid;
+  if (row.montantpaye !== undefined && row.montantPaye === undefined) normalized.montantPaye = row.montantpaye;
+  if (row.datecreation !== undefined && row.dateCreation === undefined) normalized.dateCreation = row.datecreation;
+  if (row.datelivraison !== undefined && row.dateLivraison === undefined) normalized.dateLivraison = row.datelivraison;
+  if (row.montanttotal !== undefined && row.montantTotal === undefined) normalized.montantTotal = row.montanttotal;
+  if (row.creele !== undefined && row.creeLe === undefined) normalized.creeLe = row.creele;
+  return normalized;
+}
+
 // Generic read operations
 async function fetchTable(table) {
   try {
@@ -14,7 +29,8 @@ async function fetchTable(table) {
       console.warn(`Supabase warning: could not fetch table "${table}" (status ${res.status}).`);
       return [];
     }
-    return await res.json();
+    const data = await res.json();
+    return Array.isArray(data) ? data.map(normalizeRow) : [];
   } catch (err) {
     console.error(`Supabase connection error on table "${table}":`, err);
     return [];
@@ -26,7 +42,7 @@ async function getRow(table, id) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}&select=*`, { headers });
     if (!res.ok) return null;
     const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
+    return data && data.length > 0 ? normalizeRow(data[0]) : null;
   } catch (err) {
     console.error(`Error fetching row from "${table}" with ID "${id}":`, err);
     return null;
