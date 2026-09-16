@@ -15,5 +15,12 @@
     <div class="boot">Connexion au serveur…</div>
   </div>
   <script src="app.js?v=1.1.2"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW reg error:', err));
+      });
+    }
+  </script>
 </body>
 </html>
