@@ -270,8 +270,9 @@ function startPolling() {
   if (pollingStarted) return;
   pollingStarted = true;
   setInterval(() => {
+    if (document.hidden) return;
     if (!document.getElementById("modal-overlay") && !state.authScreen) refresh();
-  }, 6000);
+  }, 20000);
 }
 
 window.submitSetup = async () => {
