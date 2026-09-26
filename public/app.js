@@ -185,10 +185,6 @@ async function refresh() {
   try {
     const prevData = state.data;
     state.data = await apiAll();
-    if (state.data && state.data.version && state.data.version !== APP_VERSION) {
-      window.location.reload();
-      return;
-    }
     
     if (prevData && prevData.commandes && state.data && state.data.commandes) {
       const prevIds = new Set(prevData.commandes.map(c => c.id));
