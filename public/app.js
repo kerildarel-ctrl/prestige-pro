@@ -4,7 +4,7 @@
    Overhauled with premium white-sidebar layout and modern dashboard.
    ================================================================= */
 
-const APP_VERSION = "1.1.2";
+const APP_VERSION = "1.2.0";
 
 const STATUTS_COMMANDE = ["En attente", "Payée"];
 const STATUT_COLOR = {
