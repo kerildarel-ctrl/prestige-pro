@@ -197,7 +197,13 @@ async function refresh() {
     state.currentUser = await apiGet("/api/me");
     state.online = true;
   } catch (e) {
-    if (e && e.status === 401) return boot();
+    if (e && e.status === 401) {
+      state.currentUser = null;
+      state.data = null;
+      state.authScreen = "login";
+      render();
+      return;
+    }
     state.online = false;
   }
   
@@ -219,7 +225,13 @@ async function mutate(fn) {
     await fn();
     await refresh();
   } catch (e) {
-    if (e && e.status === 401) return boot();
+    if (e && e.status === 401) {
+      state.currentUser = null;
+      state.data = null;
+      state.authScreen = "login";
+      render();
+      return;
+    }
     const msg = (e && e.body && e.body.error) || "Impossible de contacter le serveur.";
     alert(msg);
   }
