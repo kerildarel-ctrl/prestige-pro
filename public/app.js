@@ -655,7 +655,7 @@ function authShell(innerHtml) {
             </div>
           </div>
           <div class="visual-footer" style="color: rgba(255,255,255,0.7);">
-            © 2026 ANATOLE SERVICE — Solutions & Services Professionnels.
+            © 2026 PRESTIGE PRO — Gestion & Services.
           </div>
         </div>
       </div>
@@ -2135,7 +2135,7 @@ window.generateReportPDF = () => {
   const reportWin = window.open("", "_blank");
   
   let html = "<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'>";
-  html += "<title>Rapport d'activité ANATOLE SERVICE</title>";
+  html += "<title>Rapport d'activité PRESTIGE PRO</title>";
   html += "<style>";
   html += "  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');";
   html += "  body { font-family: 'Outfit', sans-serif; color: #1e293b; margin: 0; padding: 20px; background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }";
@@ -2194,7 +2194,7 @@ window.generateReportPDF = () => {
   html += "      </svg>";
   html += "    </div>";
   html += "    <div>";
-  html += "      <h1 style='font-size:22px; margin:0; color:#dc2626; font-weight:800; letter-spacing:-0.5px;'>ANATOLE SERVICE</h1>";
+  html += "      <h1 style='font-size:22px; margin:0; color:#dc2626; font-weight:800; letter-spacing:-0.5px;'>PRESTIGE PRO</h1>";
   html += "      <p style='margin:2px 0 0 0; color:#64748b; font-size:12px; font-weight:500;'>Rapport d'activité consolidé</p>";
   html += "    </div>";
   html += "  </div>";
@@ -2247,7 +2247,7 @@ window.generateReportPDF = () => {
   html += "  <div>";
   html += "    <div style='font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.5px;'>Préparé par</div>";
   html += "    <div style='font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 4px;'>" + esc(state.currentUser.nom) + "</div>";
-  html += "    <div style='font-size: 12px; color: #94a3b8; margin-top: 2px;'>Administrateur ANATOLE SERVICE</div>";
+  html += "    <div style='font-size: 12px; color: #94a3b8; margin-top: 2px;'>Administrateur PRESTIGE PRO</div>";
   html += "  </div>";
   html += "  <div style='text-align: right;'>";
   html += "    <div style='font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.5px;'>Signature & Cachet</div>";
@@ -2256,7 +2256,7 @@ window.generateReportPDF = () => {
   html += "</div>";
   
   html += "<div style='margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8;'>";
-  html += "  Généré automatiquement par ANATOLE SERVICE · " + new Date().toLocaleString("fr-FR");
+  html += "  Généré automatiquement par PRESTIGE PRO · " + new Date().toLocaleString("fr-FR");
   html += "</div>";
   
   html += "</div>";
