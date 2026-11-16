@@ -773,6 +773,14 @@ function renderDashboard() {
   const events = [
     ...d.ventes.map((v) => ({ date: parseLocalDate(v.date), montant: Number(v.montant) || 0 })),
     ...d.finance.filter((f) => f.type === "Recette").map((f) => ({ date: parseLocalDate(f.date), montant: Number(f.montant) || 0 })),
+    // Inclure les paiements des commandes (montantPaye) dans le CA
+    ...d.commandes
+      .filter((c) => Number(c.montantPaye) > 0)
+      .map((c) => {
+        // dateCreation peut être un ISO timestamp ou YYYY-MM-DD → prendre les 10 premiers caractères
+        const dateKey = (c.dateCreation || "").slice(0, 10);
+        return { date: parseLocalDate(dateKey), montant: Number(c.montantPaye) || 0 };
+      }),
   ];
   const sum = (from) => events.filter((e) => e.date >= from).reduce((a, e) => a + (e.montant || 0), 0);
 
