@@ -1766,6 +1766,18 @@ function renderFinance() {
   
   const recettes = list.filter((f) => f.type === "Recette").reduce((a, f) => a + f.montant, 0);
   const depenses = list.filter((f) => f.type === "Dépense").reduce((a, f) => a + f.montant, 0);
+
+  // Ajouter les paiements de commandes du jour dans les recettes
+  const commandesPaye = state.data.commandes
+    .filter((c) => Number(c.montantPaye) > 0 && (c.dateCreation || "").slice(0, 10) === targetDate)
+    .reduce((a, c) => a + Number(c.montantPaye), 0);
+
+  // Ajouter les ventes directes du jour dans les recettes
+  const ventesDuJour = state.data.ventes
+    .filter((v) => v.date === targetDate)
+    .reduce((a, v) => a + (Number(v.montant) || 0), 0);
+
+  const totalRecettes = recettes + commandesPaye + ventesDuJour;
   const isCaisseOrAdmin = state.currentUser.estAdmin || state.currentUser.role === "Caisse";
   
   return `
@@ -1790,7 +1802,7 @@ function renderFinance() {
     <div class="cards-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
       <div class="stat-card">
         <div class="label" style="color:var(--teal)">Recettes</div>
-        <div class="value mono" style="color:var(--teal)">${fmt(recettes)}</div>
+        <div class="value mono" style="color:var(--teal)">${fmt(totalRecettes)}</div>
         <div class="wave-container">
           <svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width:100%;height:100%;">
             <path d="M0 20 Q 20 12, 40 24 T 80 14 T 100 18 L 100 30 L 0 30 Z" fill="#10b98110" stroke="#10b981" stroke-width="1.5"/>
@@ -1808,7 +1820,7 @@ function renderFinance() {
       </div>
       <div class="stat-card">
         <div class="label">Bénéfice net</div>
-        <div class="value mono" style="color:${recettes - depenses >= 0 ? 'var(--teal)' : 'var(--red)'}">${fmt(recettes - depenses)}</div>
+        <div class="value mono" style="color:${totalRecettes - depenses >= 0 ? 'var(--teal)' : 'var(--red)'}">${fmt(totalRecettes - depenses)}</div>
         <div class="wave-container">
           <svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width:100%;height:100%;">
             <path d="M0 20 Q 20 12, 40 24 T 80 14 T 100 18 L 100 30 L 0 30 Z" fill="#4f46e510" stroke="#4f46e5" stroke-width="1.5"/>
