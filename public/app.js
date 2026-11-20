@@ -1828,18 +1828,59 @@ function renderFinance() {
         </div>
       </div>
     </div>
-    ${list.length === 0 ? `<p class="empty-msg">Aucune écriture financière enregistrée pour cette date.</p>` : `
-    <div class="table-wrap"><table>
-      <thead><tr><th>Date</th><th>Description</th><th>Type</th><th style="text-align:right;">Montant</th></tr></thead>
-      <tbody>
-        ${list.slice().reverse().map((f) => `<tr>
-          <td class="mono" style="color:var(--mute)">${esc(f.date)}</td>
-          <td style="font-weight:600;">${esc(f.description)}</td>
-          <td><span class="badge" style="background:${f.type === "Recette" ? "#177A671A" : "#D6432B1A"};color:${f.type === "Recette" ? "var(--teal)" : "var(--red)"}">${f.type}</span></td>
-          <td class="mono" style="text-align:right;font-weight:700;color:${f.type === "Recette" ? "var(--teal)" : "var(--red)"}">${f.type === "Recette" ? "+" : "-"}${fmt(f.montant)}</td>
-        </tr>`).join("")}
-      </tbody>
-    </table></div>`}
+    ${(() => {
+      // Construire une liste unifiée de toutes les opérations du jour
+      const allOps = [
+        // Écritures finance manuelles
+        ...list.map(f => ({
+          date: f.date,
+          description: f.description,
+          type: f.type,
+          montant: f.montant,
+          source: 'finance'
+        })),
+        // Paiements de commandes du jour
+        ...state.data.commandes
+          .filter(c => Number(c.montantPaye) > 0 && (c.dateCreation || '').slice(0, 10) === targetDate)
+          .map(c => {
+            const client = state.data.clients.find(cl => cl.id === c.clientId);
+            return {
+              date: (c.dateCreation || '').slice(0, 10),
+              description: 'Commande : ' + esc(c.designation) + (client ? ' (' + esc(client.nom) + ')' : ''),
+              type: 'Recette',
+              montant: Number(c.montantPaye),
+              source: 'commande'
+            };
+          }),
+        // Ventes directes du jour
+        ...state.data.ventes
+          .filter(v => v.date === targetDate)
+          .map(v => ({
+            date: v.date,
+            description: 'Vente : ' + esc(v.description || v.designation || 'Vente directe'),
+            type: 'Recette',
+            montant: Number(v.montant) || 0,
+            source: 'vente'
+          }))
+      ];
+
+      if (allOps.length === 0) {
+        return `<p class="empty-msg">Aucune opération enregistrée pour cette date.</p>`;
+      }
+
+      return `
+      <div class="table-wrap"><table>
+        <thead><tr><th>Date</th><th>Description</th><th>Type</th><th style="text-align:right;">Montant</th></tr></thead>
+        <tbody>
+          ${allOps.map(f => `<tr>
+            <td class="mono" style="color:var(--mute)">${esc(f.date)}</td>
+            <td style="font-weight:600;">${f.description}</td>
+            <td><span class="badge" style="background:${f.type === 'Recette' ? '#177A671A' : '#D6432B1A'};color:${f.type === 'Recette' ? 'var(--teal)' : 'var(--red)'}">${f.type}</span></td>
+            <td class="mono" style="text-align:right;font-weight:700;color:${f.type === 'Recette' ? 'var(--teal)' : 'var(--red)'}">${f.type === 'Recette' ? '+' : '-'}${fmt(f.montant)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+    })()}
   `;
 }
 
